@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  font-size: 3.73vw; /* Mobile font size first */
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+
+/*  */
+
+h1 {
+  font-size: 12.8vw;
+  line-height: 12.8vw;
+}
+
+h2 {
+  font-size: 10.13vw;
+  line-height: 10.13vw;
+}
+
+h3 {
+  font-size: 6.4vw;
+  line-height: 7.68vw;
+}
+
+h4 {
+  font-size: 5.33vw;
+  line-height: 6.4vw;
+}
+
+h5 {
+  font-size: 4.8vw;
+  line-height: 5.76vw;
+}
+
+li {
+  list-style-type: none;
+}
+
+details > summary {
+  list-style: none;
+}
+
+details > summary::marker, /* Latest Chrome, Edge, Firefox */ 
+details > summary::-webkit-details-marker /* Safari */ {
+  display: none;
+}
+
+/* Desktop font sizes */
+@media screen and (min-width: 810px) and (max-width: 1920px) {
+  body {
+    font-size: 1.11vw;
+  }
+
+  h1 {
+    font-size: 5vw;
+    line-height: 5vw;
+  }
+
+  h2 {
+    font-size: 3.89vw;
+    line-height: 3.89vw;
+  }
+
+  h3 {
+    font-size: 2.5vw;
+    line-height: 3vw;
+  }
+
+  h4 {
+    font-size: 1.67vw;
+    line-height: 2vw;
+  }
+
+  h5 {
+    font-size: 1.39vw;
+    line-height: 1.67vw;
+  }
+}
+
+
+/* Extra Large Desktop font sizes */
+@media screen and (min-width: 1919px) {
+  body {
+    font-size: 0.83vw;
+  }
+
+  h1 {
+    font-size: 3.75vw;
+    line-height: 3.75vw;
+  }
+
+  h2 {
+    font-size: 2.92vw;
+    line-height: 2.92vw;
+  }
+
+  h3 {
+    font-size: 1.88vw;
+    line-height: 2.25vw;
+  }
+
+  h4 {
+    font-size: 1.25vw;
+    line-height: 1.5vw;
+  }
+
+  h5 {
+    font-size: 1.04vw;
+    line-height: 1.25vw;
+  }
+}
