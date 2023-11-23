@@ -1,9 +1,6 @@
-export interface QueryParams {
+export interface QueryParamsAndFilters {
     search?: string
     page: number
-}
-
-export interface FilterParams {
     date?: string
     author?: string
     source?: string

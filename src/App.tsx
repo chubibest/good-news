@@ -1,22 +1,53 @@
-import newsitems  from './utilities/dummydata'
-import NewsItem from './Components/NewsItem'
-import React from 'react'
+import NewsItem, { NewsItemProps } from './Components/NewsItem'
+import React, { useEffect, useState, useCallback } from 'react'
+
+import { composer } from './utilities/data-sources'
 
 function App() {
-  return (
-    <div className="px-[4vw]">
-      {newsitems.map(({ headline, date }) => {
-        return (
-          <div className='mb-[9vw]'>
+  const [newsItems, setNewsItems] = useState([] as NewsItemProps[])
+  const [searchText, setSearchText] = useState('')
+  const [buttonActive, setButtonActive] = useState(true)
+  
 
-            <NewsItem 
-              headline={headline as string}
-              date={date}
-              source={'guardian'}
-              thumbnail='https://www.kasandbox.org/programming-images/avatars/spunky-sam.png'
-              content='lipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum more lorem ipusm immet lipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum more lorem ipusm immet lipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum more lorem ipusm immet lipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum more lorem ipusm immet lipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum more lorem ipusm immet lipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum more lorem ipusm immet lipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum more lorem ipusm immet lipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum more lorem ipusm immet'
-              />
-          </div>
+  const changeSearchText = useCallback((e) => {
+    setSearchText(() => e.target.value)
+  }, [])
+
+  const handleSearch = useCallback(() => {
+
+    if (!searchText) {
+      return
+    }
+    setButtonActive(() => false)
+    composer({ page: 1, search: searchText }).then((data) => {
+      setNewsItems(() => data)
+      setButtonActive(() => true)
+    })
+  }, [])
+
+  useEffect(() => {
+    composer({ page: 1 }).then((data) => {
+      setNewsItems(data)
+    })
+
+  }, [])
+  return (
+    <div className="px-[4vw] py-[4vw] md:py-[3vw]">
+      <header className='pb-[8vw] md:pb-[4vw]'>
+        <div className='flex gap-[2vw]'>
+          <input className='pl-[2vw] md:pl-[1vw]' type="text" 
+            placeholder="Search" value={searchText} onChange={changeSearchText}
+            />
+          <button className={`${!buttonActive ? 'bg-[dimgrey]': ''}`} onClick={handleSearch} disabled={!buttonActive}>Search</button>
+        </div>
+      </header>
+
+      {newsItems.map((item, index) => {
+        return (
+          <NewsItem
+            {...item}
+            key={`${item.id}-${index}-${item.headline}`}
+            />
         )
       })}
     </div>

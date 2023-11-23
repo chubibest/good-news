@@ -1,23 +1,44 @@
-import NewsAPI from 'newsapi'
-import { QueryParams, FilterParams } from '../../../types/BaseTypes';
+import { QueryParamsAndFilters } from '../../../types/BaseTypes';
+import { NewsItemProps } from "../../../Components/NewsItem";
+import formatDate from '../../formatDate';
+interface ReturnType {
+    status: string
+    articles: {
+        id: string,
+        name: string
+        author: string
+        title: string
+        description: string
+        url: string
+        urlToImage: string
+        publishedAt: string
+        content: string
+    }[]
+}
 
-const newsapi = new NewsAPI(process.env.NEWS_API_KEY as string);
+const query = async ({ search, page }: QueryParamsAndFilters): Promise<NewsItemProps[]>  => {
+    const url = `https://newsapi.org/v2/top-headlines?apiKey=c05d19226b0e4a96aecb2e7a7b9b038c&page=${page}&language=en`
+    const response = await fetch(search ? `${url}&q=${search}`: url);
+    const data = await response.json() as ReturnType;
 
-const query = async ({ search, page }: QueryParams) => {
-
-    const response = await newsapi.v2.topHeadlines({
-        ...(search && { q: search.trim() }),
-        page
-    })
-
-    console.log('Query News API', JSON.stringify(response, null, 2))
-    const { status, articles } = response
+    console.log('Query News API', JSON.stringify(data, null, 2))
+    const { status, articles } = data
     if(status !== 'ok') {
         return []
     }
 
+    const result = articles.map((article: any) => {
+        return {
+            id: article.title,
+            headline: article.title,
+            thumbnail: article.urlToImage,
+            date: formatDate(article.publishedAt),
+            url: article.url,
+            source: 'newsapi' as 'newsapi',
+        }
+    })
     // filter by date, author and source
-    return articles
+    return result
 }
 
 export { query }
