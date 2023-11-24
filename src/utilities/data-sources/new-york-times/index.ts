@@ -26,7 +26,6 @@ const query = async ({ search, page }: QueryParamsAndFilters): Promise<NewsItemP
         const response = await fetch(url);
         const data = await response.json() as ReturnType;
 
-        console.log(JSON.stringify(data, null, 2))
         const results = data.response.docs.map((result) => {
             return {
                 id: result.web_url,

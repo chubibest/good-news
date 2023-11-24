@@ -13,6 +13,10 @@ export default {
         lg: '1440px',
         xl: '1920px',
       },
+      colors: {
+        'active': '#5688e5',
+        'inactive': '#fff'
+      }
     },
   },
   plugins: [],

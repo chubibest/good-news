@@ -21,7 +21,6 @@ const query = async ({ search, page }: QueryParamsAndFilters): Promise<NewsItemP
     const response = await fetch(search ? `${url}&q=${search}`: url);
     const data = await response.json() as ReturnType;
 
-    console.log('Query News API', JSON.stringify(data, null, 2))
     const { status, articles } = data
     if(status !== 'ok') {
         return []

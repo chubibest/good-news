@@ -33,9 +33,4 @@ function formatDate(inputDate) {
     }
   }
   
-  // Example usage:
-  const dateString = '2023-11-22T18:33:45Z';
-  const formattedDate = formatDate(dateString);
-  console.log(formattedDate);
-  
 export default formatDate
