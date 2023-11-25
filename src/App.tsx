@@ -91,7 +91,7 @@ function App() {
       </div>
       :
       <div className="overflow-hidden h-[100vh] px-[4vw] py-[8vw] md:py-[3vw]">
-        <header className=' pb-[8vw] md:pb-[3vw] z-10 bg-[#242424]'>
+        <header className=' pb-[8vw] md:pb-[3vw] z-10 bg-[var(--background)]'>
           <div className='flex justify-between md:justify-evenly items-center'>
             <div className='flex gap-[2vw]'>
               <input className='pl-[2vw] md:pl-[1vw]' type="text" 
@@ -102,10 +102,10 @@ function App() {
             <Reload loading={fetching}/>
           </div>
           <div className='flex justify-center items-center gap-[4vw] pt-[2vw] pt-[4vw]'>
-            <div className="relative" onClick={handleFilterClick}>
+            <div className="relative" onClick={handleFilterClick} aria-label='Filter by news source'>
               <FilterSVG filter={selectedFilter} clearFilter={setSelectedFilter} setIsFilterOpen={setIsFilterOpen}/>
               {isFilterOpen && (
-                <ul className="text-left  flex flex-col absolute z-10 w-[30vw] md:w-[10vw]  gap-[2vw] top-[7vw] md:top-[3vw] left-[0] rounded shadow bg-[#242424]">
+                <ul className="text-left  flex flex-col absolute z-10 w-[30vw] md:w-[10vw]  gap-[2vw] top-[7vw] md:top-[3vw] left-[0] rounded shadow bg-[var(--background)]">
                   {options.map((option) => (
                     <li
                       key={option}
@@ -121,7 +121,7 @@ function App() {
                 </ul>
               )}
             </div>
-            <div onClick={handleSortOrder}>
+            <div onClick={handleSortOrder} aria-label='Sort by date'>
               <SortSVG sortOrder={sortOrder} />
             </div>
           </div>
