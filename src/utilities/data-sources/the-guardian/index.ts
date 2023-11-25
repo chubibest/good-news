@@ -2,9 +2,6 @@ import { NewsItemProps } from "../../../Components/NewsItem";
 import { QueryParamsAndFilters } from "../../../types/BaseTypes";
 import formatDate from "../../formatDate";
 
-const apiKey = '984bbfa7-3cb3-4ef1-ad4c-4723d115fdf2';
-const apiUrl = `https://content.guardianapis.com/search?api-key=${apiKey}`;
-
 interface ReturnType {
   response: {
     status: string;
@@ -21,6 +18,9 @@ interface ReturnType {
       "sectionId": string
       "sectionName": string
       "webPublicationDate": string
+      "fields": {
+        "thumbnail": string
+      },
       "webTitle": string
       "webUrl": string
       "apiUrl": string
@@ -31,8 +31,10 @@ interface ReturnType {
   };
 
 }
+
+const keys = ['984bbfa7-3cb3-4ef1-ad4c-4723d115fdf2', '17d993b2-4853-4f27-84be-5b3ba90a435c', '0108cf2e-fb64-405c-806c-55cca73c2076']
 const query = async ({ search, page }: QueryParamsAndFilters): Promise<NewsItemProps[]>  => {
-  const url = apiUrl + `&page=${page}`
+  const url =`https://content.guardianapis.com/search?api-key=${keys[0]}&page=${page}&show-fields=thumbnail`
   try {
     const response = await fetch(search ? `${url}&q=${search}`: url);
     const data = await response.json() as ReturnType;
@@ -41,14 +43,16 @@ const query = async ({ search, page }: QueryParamsAndFilters): Promise<NewsItemP
       return {
         id: result.id,
         headline: result.webTitle,
-        thumbnail: result.webUrl,
+        thumbnail: result.fields?.thumbnail,
         date: formatDate(result.webPublicationDate),
+        rawDate: result.webPublicationDate.split('T')[0],
         source: 'guardian' as 'guardian',
       }
     })
 
     return results
   } catch (error) {
+    keys.push(keys.shift() as string);
     console.log(error)
     return []
   }

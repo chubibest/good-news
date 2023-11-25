@@ -1,32 +1,18 @@
 import React from 'react';
 import ColorfulTag from './ColorfulTag';
-
+import { sourceTagStyles } from '../utilities/options';
 export interface NewsItemProps {
     id: string
     headline: string
     thumbnail: string
     date: string
-    url: string
-    source: 'nytimes' | 'guardian' | 'newsapi'
+    rawDate: string
+    url?: string
+    // source: 'nytimes' | 'guardian' | 'newsapi'
+    source: string
 }
 
-const sourceTagStyles = {
-    nytimes: {
-        bgColor: 'bg-[#000]',
-        text: 'NY Times',
-        textColor: 'text-[#fff]'
-    },
-    guardian: {
-        bgColor: 'bg-[#052962]',
-        text: 'The Guardian',
-        textColor: 'text-[#fff]'
-    },
-    newsapi: {
-        bgColor: 'bg-[#1a73e8]',
-        text: 'NewsAPI',
-        textColor: 'text-[#fff]'
-    },
-}
+
 
 const NewsItem = ({ headline, thumbnail, date, source }: NewsItemProps) => {
     return (
@@ -38,8 +24,8 @@ const NewsItem = ({ headline, thumbnail, date, source }: NewsItemProps) => {
             </div>
             <div className="relative row-start-3 md:row-start-1 mb-[2vw] md:mb-[unset]
                 place-self-center w-[60vw] h-[60vw] md:w-[15vw] md:h-[15vw] rounded col-start-1
-                col-span-full md:col-span-3 mt-[4vw] md:mt[unset]">
-                <img className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 gap-[2vw] object-cover rounded' src={thumbnail} alt='Thumbnail' />
+                col-span-full md:col-span-3 mt-[4vw] md:mt-[unset]">
+                <img className='absolute top-1/2 md:top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 md:-translate-y-0 gap-[2vw] object-cover rounded' src={thumbnail} alt='Thumbnail' />
             </div>
         </div>
     );

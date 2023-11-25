@@ -2,10 +2,11 @@ import { query as guardianQuery } from './the-guardian'
 import { query as nytQuery } from './new-york-times'
 import { query as newsApiQuery } from './news-api'
 import { QueryParamsAndFilters } from '../../types/BaseTypes'
+import { NewsItemProps } from '../../Components/NewsItem'
 // each should filter
 // each should transform
 
-// export const composer = async ({ search, page }: QueryParamsAndFilters) => {
+// export const composer = async ({ search, page }: QueryParamsAndFilters): Promise<NewsItemProps[]> => {
 //     console.log('search', search)
 //     console.log('page',page)
 //     const guardian = await guardianQuery({ search, page })
@@ -15,174 +16,218 @@ import { QueryParamsAndFilters } from '../../types/BaseTypes'
 
 // }
 
-// export const composer = async ({ search, page }: QueryParamsAndFilters) => {
-//     console.log('search', search)
-//     console.log('page',page)
-//     const guardian = await guardianQuery({ search, page })
-//     const nyt = await nytQuery({ search, page })
-//     const newsApi = await newsApiQuery({ search, page })
-
-//     return [...guardian, ...nyt, ...newsApi]
-// }
-
-export const composer = async ({ search, page }: QueryParamsAndFilters) => {
-    console.log('search', search)
-    console.log('page',page)
+export const composer = async ({ search, page }: QueryParamsAndFilters): Promise<NewsItemProps[]> => {
     const guardian = await guardianQuery({ search, page })
     const nyt = await nytQuery({ search, page })
     const newsApi = await newsApiQuery({ search, page })
 
-    return data
+    return [...guardian, ...nyt, ...newsApi]
+}
+
+// export const composer = async ({ search, page }: QueryParamsAndFilters): Promise<NewsItemProps[]> => {
+//     console.log('search', search)
+//     console.log('page',page)
+//     // const guardian = await guardianQuery({ search, page })
+//     // const nyt = await nytQuery({ search, page })
+//     // const newsApi = await newsApiQuery({ search, page })
+
+//     return data
+// }
+
+type SortGeneric = Awaited<ReturnType<typeof composer>>
+interface SortParams {
+    order?: string
+    source?: string
+}
+export const sortFunction = (data: SortGeneric, { order, source }: SortParams): SortGeneric => {
+    let result = data
+
+    if(source) {
+        result = result.filter(item => item.source === source)
+    }
+    console.log('order', order)
+       
+    result.sort((a, b) => {
+        const dateA = new Date(a.rawDate).getTime();
+        const dateB = new Date(b.rawDate).getTime();
+        console.log('is sorting')
+        
+        if (order === 'newToOld') {
+        return dateB - dateA;
+        }
+        return dateA - dateB;
+    });
+                  
+
+    return result
 }
 const data = [
     {
-      "id": "football/live/2023/nov/25/manchester-city-v-liverpool-premier-league-live",
-      "headline": "Manchester City v Liverpool: Premier League – live ",
-      "thumbnail": "https://www.theguardian.com/football/live/2023/nov/25/manchester-city-v-liverpool-premier-league-live",
+      "id": "uk-news/2023/nov/25/fivefold-rise-number-eu-citizens-refused-entry-uk-since-brexit",
+      "headline": "Fivefold rise in number of EU citizens refused entry to UK since Brexit",
+      "thumbnail": "https://media.guim.co.uk/01aff52275ec83648a04b1c80a44643eae0f61db/251_277_3597_2159/500.jpg",
       "date": "November 25th, 2023",
+      "rawDate": "2023-11-25",
       "source": "guardian"
     },
     {
-      "id": "world/live/2023/nov/25/israel-hamas-war-live-hamas-set-to-release-fresh-wave-of-hostages-reports-say-as-ceasefire-continues",
-      "headline": "Israel-Hamas war live: 14 Israeli hostages to be released in exchange for 42 Palestinian prisoners",
-      "thumbnail": "https://www.theguardian.com/world/live/2023/nov/25/israel-hamas-war-live-hamas-set-to-release-fresh-wave-of-hostages-reports-say-as-ceasefire-continues",
+      "id": "culture/2023/nov/25/nsw-police-fees-musical-festivals-dying-greens",
+      "headline": "NSW police accused of ‘killing’ music festivals by charging excessive fees",
+      "thumbnail": "https://media.guim.co.uk/375a4ac740ee2fddfcf026d35f094f1c90e3fe98/0_73_3860_2317/500.jpg",
       "date": "November 25th, 2023",
+      "rawDate": "2023-11-25",
       "source": "guardian"
     },
     {
-      "id": "world/live/2023/nov/25/russia-ukraine-war-kyiv-drone-attack-putin-zelenskiy-latest-news",
-      "headline": "Russia-Ukraine war live: Kremlin declares former Russian PM a ‘foreign agent’",
-      "thumbnail": "https://www.theguardian.com/world/live/2023/nov/25/russia-ukraine-war-kyiv-drone-attack-putin-zelenskiy-latest-news",
+      "id": "australia-news/2023/nov/25/newcastle-harbour-blockade-activists-planning-the-biggest-civil-disobedience-action-in-australias-history",
+      "headline": "Newcastle port blockade: paddling activists take part in one of the biggest climate protests in Australia’s history",
+      "thumbnail": "https://media.guim.co.uk/11b267d169dc81c41f3cea8f2972313b606c87ee/0_233_3543_2125/500.jpg",
       "date": "November 25th, 2023",
+      "rawDate": "2023-11-25",
       "source": "guardian"
     },
     {
-      "id": "media/2023/nov/25/uae-backed-bid-for-telegraph-raises-fears-of-gulf-newswashing",
-      "headline": "UAE-backed bid for Telegraph raises fears of Gulf ‘newswashing’",
-      "thumbnail": "https://www.theguardian.com/media/2023/nov/25/uae-backed-bid-for-telegraph-raises-fears-of-gulf-newswashing",
+      "id": "politics/2023/nov/24/sunak-risks-ripping-up-good-friday-agreement-rwanda-senior-tories-say",
+      "headline": "Sunak risks ripping up Good Friday agreement over Rwanda, senior Tories say",
+      "thumbnail": "https://media.guim.co.uk/8b6374ac612ed5d7c00f6b0dcd2b61ef1c45b91a/0_200_6000_3600/500.jpg",
       "date": "November 25th, 2023",
+      "rawDate": "2023-11-25",
       "source": "guardian"
     },
     {
-      "id": "books/2023/nov/25/ottessa-moshfegh-everyone-asked-me-why-i-had-written-such-a-disgusting-female-character",
-      "headline": "Ottessa Moshfegh: ‘Everyone asked me why I had written such a disgusting female character’",
-      "thumbnail": "https://www.theguardian.com/books/2023/nov/25/ottessa-moshfegh-everyone-asked-me-why-i-had-written-such-a-disgusting-female-character",
+      "id": "crosswords/weekend/672",
+      "headline": "Weekend crossword No 672",
       "date": "November 25th, 2023",
+      "rawDate": "2023-11-25",
       "source": "guardian"
     },
     {
-      "id": "lifeandstyle/2023/nov/25/in-the-dog-house-why-are-so-many-of-britains-dogs-behaving-badly",
-      "headline": "In the dog house: why are so many of Britain’s dogs behaving badly?",
-      "thumbnail": "https://www.theguardian.com/lifeandstyle/2023/nov/25/in-the-dog-house-why-are-so-many-of-britains-dogs-behaving-badly",
+      "id": "crosswords/prize/29237",
+      "headline": "Prize crossword No 29,237",
       "date": "November 25th, 2023",
+      "rawDate": "2023-11-25",
       "source": "guardian"
     },
     {
-      "id": "media/2023/nov/25/lachlan-rupert-murdoch-fox-news",
-      "headline": "Headaches at Fox as Lachlan Murdoch takes reins from father Rupert",
-      "thumbnail": "https://www.theguardian.com/media/2023/nov/25/lachlan-rupert-murdoch-fox-news",
+      "id": "business/2023/nov/24/thousands-of-hsbc-customers-in-uk-unable-to-access-online-banking-services",
+      "headline": "Thousands of HSBC customers in UK unable to access online banking services",
+      "thumbnail": "https://media.guim.co.uk/16743d376f9180a3ae32c684cfc686185ba0d21a/43_238_5953_3574/500.jpg",
       "date": "November 25th, 2023",
+      "rawDate": "2023-11-24",
       "source": "guardian"
     },
     {
-      "id": "culture/2023/nov/25/cultural-vandalism-row-as-kew-gardens-and-natural-history-museum-plan-to-move-collections-out-of-london",
-      "headline": "‘Cultural vandalism’: row as Kew Gardens and Natural History Museum plan to move collections out of London",
-      "thumbnail": "https://www.theguardian.com/culture/2023/nov/25/cultural-vandalism-row-as-kew-gardens-and-natural-history-museum-plan-to-move-collections-out-of-london",
+      "id": "uk-news/2023/nov/24/met-police-shoot-dead-armed-man-who-said-he-wanted-to-kill-himself",
+      "headline": "Met police shoot dead armed man who said he wanted to kill himself",
+      "thumbnail": "https://media.guim.co.uk/82dac15ce506e3259b41cbc9a9ab51267e3fa5d9/0_215_8256_4954/500.jpg",
       "date": "November 25th, 2023",
+      "rawDate": "2023-11-24",
       "source": "guardian"
     },
     {
-      "id": "politics/2023/nov/25/james-cleverly-frustrated-with-fixation-government-rwanda-immigration-policy",
-      "headline": "James Cleverly ‘frustrated’ with fixation on government’s Rwanda policy",
-      "thumbnail": "https://www.theguardian.com/politics/2023/nov/25/james-cleverly-frustrated-with-fixation-government-rwanda-immigration-policy",
+      "id": "commentisfree/2023/nov/25/what-i-learned-from-our-child-sexual-abuse-survey-rational-paranoia-can-help-parents-protect-their-kids",
+      "headline": "What I learned from our child sexual abuse survey: ‘rational paranoia’ can help parents protect their kids | Michael Salter",
+      "thumbnail": "https://media.guim.co.uk/23a63add400d41a78e82487cd05463b248b8c52b/0_97_5220_3132/500.jpg",
       "date": "November 25th, 2023",
+      "rawDate": "2023-11-24",
       "source": "guardian"
     },
     {
-      "id": "environment/2023/nov/25/rock-climbing-damage-cliff-ecosystems-aoe",
-      "headline": "Rock climbers like to connect with nature – but are they also destroying it?",
-      "thumbnail": "https://www.theguardian.com/environment/2023/nov/25/rock-climbing-damage-cliff-ecosystems-aoe",
+      "id": "artanddesign/2023/nov/25/louise-bourgeois-art-gallery-nsw-has-the-day-invaded-the-night-or-has-the-night-invaded-the-day",
+      "headline": "Nightmarish, playful, erotic: the revelatory Sydney show of art titan Louise Bourgeois",
+      "thumbnail": "https://media.guim.co.uk/84306bad5262b7c53ef037838f049b97fdeb6128/0_27_4000_2401/500.jpg",
       "date": "November 25th, 2023",
+      "rawDate": "2023-11-24",
       "source": "guardian"
     },
     {
-      "id": "https://www.nytimes.com/interactive/2023/11/01/us/hawaii-maui-fire-timeline.html",
-      "headline": "Inside the Deadly Maui Inferno, Hour by Hour",
-      "thumbnail": "https://static01.nyt.com/images/2023/10/31/multimedia/2023-09-06-hawaii-3dtile-cesium-index/2023-09-06-hawaii-3dtile-cesium-index-square640-v3.jpg",
-      "date": "November 1st, 2023",
-      "url": "https://www.nytimes.com/interactive/2023/11/01/us/hawaii-maui-fire-timeline.html",
+      "id": "https://www.nytimes.com/2021/02/01/world/asia/india-budget-modi-economy.html",
+      "headline": "India’s Modest Budget Signals Modi’s Limited Options",
+      "thumbnail": "https://static01.nyt.com/images/2021/02/02/world/01india-budget-print/01india-budget-square640.jpg",
+      "date": "February 1st, 2021",
+      "rawDate": "2021-02-01",
+      "url": "https://www.nytimes.com/2021/02/01/world/asia/india-budget-modi-economy.html",
       "source": "nytimes"
     },
     {
-      "id": "https://www.nytimes.com/2023/10/28/opinion/marc-andreessen-manifesto-techno-optimism.html",
-      "headline": "A Tech Overlord’s Horrifying, Silly Vision for Who Should Rule the World",
-      "thumbnail": "https://static01.nyt.com/images/2023/10/28/opinion/28spiers/28spiers-square640.png",
-      "date": "October 28th, 2023",
-      "url": "https://www.nytimes.com/2023/10/28/opinion/marc-andreessen-manifesto-techno-optimism.html",
+      "id": "https://www.nytimes.com/2021/01/08/arts/design/olujimi-portraits.html",
+      "headline": "In 177 Portraits, an Artist’s Homage to His Bed-Stuy Muse",
+      "thumbnail": "https://static01.nyt.com/images/2021/01/10/arts/10olujimi-portraits-01/merlin_178641810_71ef5003-47bc-45b5-840a-3ddb03e29309-square640.jpg",
+      "date": "January 8th, 2021",
+      "rawDate": "2021-01-08",
+      "url": "https://www.nytimes.com/2021/01/08/arts/design/olujimi-portraits.html",
       "source": "nytimes"
     },
     {
-      "id": "https://www.nytimes.com/2023/10/20/style/modern-love-google-search-results-end-relationship.html",
-      "headline": "When Your Search History Says What You Can’t",
-      "thumbnail": "https://static01.nyt.com/images/2023/10/22/fashion/22MODERN-OSET/22MODERN-OSET-square640.jpg",
-      "date": "October 20th, 2023",
-      "url": "https://www.nytimes.com/2023/10/20/style/modern-love-google-search-results-end-relationship.html",
+      "id": "https://www.nytimes.com/2020/12/18/style/self-care/how-to-move-in-with-your-parents.html",
+      "headline": "How to Move In With Your Parents (and, Eventually, Move Out)",
+      "thumbnail": "https://static01.nyt.com/images/2020/12/20/fashion/00MOVINGHOME-art/00MOVINGHOME-art-square640.jpg",
+      "date": "December 18th, 2020",
+      "rawDate": "2020-12-18",
+      "url": "https://www.nytimes.com/2020/12/18/style/self-care/how-to-move-in-with-your-parents.html",
       "source": "nytimes"
     },
     {
-      "id": "https://www.nytimes.com/interactive/2023/10/13/us/gag-order-trump-response.html",
-      "headline": "Read Trump’s Response to a Gag Order Request",
-      "thumbnail": "https://static01.nyt.com/images/2023/10/13/doc-1430400-gov-uscourts-dcd--promo/doc-1430400-gov-uscourts-dcd--promo-square640.png",
-      "date": "October 13th, 2023",
-      "url": "https://www.nytimes.com/interactive/2023/10/13/us/gag-order-trump-response.html",
+      "id": "https://www.nytimes.com/2020/09/29/us/politics/robert-mueller-andrew-weissmann.html",
+      "headline": "Mueller Rebuts Insider’s Claim That He Could Have Done More to Investigate Trump",
+      "thumbnail": "https://static01.nyt.com/images/2020/09/29/us/politics/29dc-mueller/29dc-mueller-square640.jpg",
+      "date": "September 29th, 2020",
+      "rawDate": "2020-09-29",
+      "url": "https://www.nytimes.com/2020/09/29/us/politics/robert-mueller-andrew-weissmann.html",
       "source": "nytimes"
     },
     {
-      "id": "https://www.nytimes.com/2023/10/13/books/review/dialogue-with-a-somnambulist-chloe-aridjis-dearborn-ghassan-zeineddine-every-drop-is-a-mans-nightmare-megan-kamalei-kakimoto.html",
-      "headline": "Story Collections That Are Also Inventories of Catastrophes",
-      "thumbnail": "https://static01.nyt.com/images/2023/10/15/books/review/15Shortlist-BLACKBURN/15Shortlist-BLACKBURN-square640.jpg",
-      "date": "October 13th, 2023",
-      "url": "https://www.nytimes.com/2023/10/13/books/review/dialogue-with-a-somnambulist-chloe-aridjis-dearborn-ghassan-zeineddine-every-drop-is-a-mans-nightmare-megan-kamalei-kakimoto.html",
+      "id": "https://www.nytimes.com/2020/09/28/t-magazine/design-future-pandemic-climate.html",
+      "headline": "Design for the Future When the Future Is Bleak",
+      "thumbnail": "https://static01.nyt.com/images/2020/09/28/t-magazine/28tmag-future-slide-2V39/28tmag-future-slide-2V39-square640.jpg",
+      "date": "September 28th, 2020",
+      "rawDate": "2020-09-28",
+      "url": "https://www.nytimes.com/2020/09/28/t-magazine/design-future-pandemic-climate.html",
       "source": "nytimes"
     },
     {
-      "id": "https://www.nytimes.com/2023/10/11/arts/television/frasier-reboot-review.html",
-      "headline": "Review: ‘Frasier’ Returns, Tossed, Scrambled and Eggscruciating",
-      "thumbnail": "https://static01.nyt.com/images/2023/10/12/multimedia/11frasier-review-qtwj/11frasier-review-qtwj-square640.jpg",
-      "date": "October 11th, 2023",
-      "url": "https://www.nytimes.com/2023/10/11/arts/television/frasier-reboot-review.html",
+      "id": "https://www.nytimes.com/2020/09/24/t-magazine/sculpturecenter-queer-correspondence.html",
+      "headline": "The T List: Five Things We Recommend This Week",
+      "thumbnail": "https://static01.nyt.com/images/2020/09/23/t-magazine/23tmag-newsletter-slide-ARMT/23tmag-newsletter-slide-ARMT-square640.jpg",
+      "date": "September 24th, 2020",
+      "rawDate": "2020-09-24",
+      "url": "https://www.nytimes.com/2020/09/24/t-magazine/sculpturecenter-queer-correspondence.html",
       "source": "nytimes"
     },
     {
-      "id": "https://www.nytimes.com/interactive/2023/09/30/us/politics/senate-shutdown-vote-live.html",
-      "headline": "How Each Member Voted on the Senate Stopgap Spending Measure",
-      "thumbnail": "https://static01.nyt.com/images/2023/09/30/multimedia/senate-shutdown-live-vote-0930-promo/senate-shutdown-live-vote-0930-promo-square640.jpg",
-      "date": "October 1st, 2023",
-      "url": "https://www.nytimes.com/interactive/2023/09/30/us/politics/senate-shutdown-vote-live.html",
+      "id": "https://www.nytimes.com/2020/09/21/us/politics/andrew-weissmann-mueller.html",
+      "headline": "Mueller’s Team Should Have Done More to Investigate Trump-Russia Links, Top Aide Says",
+      "thumbnail": "https://static01.nyt.com/images/2020/10/01/us/politics/21dc-weissmann-sub/21dc-weissmann-sub-square640-v2.jpg",
+      "date": "September 21st, 2020",
+      "rawDate": "2020-09-21",
+      "url": "https://www.nytimes.com/2020/09/21/us/politics/andrew-weissmann-mueller.html",
       "source": "nytimes"
     },
     {
-      "id": "https://www.nytimes.com/2023/09/26/us/politics/trump-jan-6-gag-order.html",
-      "headline": "Trump Lawyers Assail Gag Order Request in Election Case",
-      "thumbnail": "https://static01.nyt.com/images/2023/09/25/multimedia/25dc-trump-filing-fqmj/25dc-trump-filing-fqmj-square640.jpg",
-      "date": "September 26th, 2023",
-      "url": "https://www.nytimes.com/2023/09/26/us/politics/trump-jan-6-gag-order.html",
+      "id": "https://www.nytimes.com/2020/09/15/arts/music/angel-deradoorian-find-the-sun.html",
+      "headline": "Angel Deradoorian Channels Cosmic Energy (and Ozzy Osbourne)",
+      "thumbnail": "https://static01.nyt.com/images/2020/09/16/arts/15deradoorian1/15deradoorian1-square640.jpg",
+      "date": "September 15th, 2020",
+      "rawDate": "2020-09-15",
+      "url": "https://www.nytimes.com/2020/09/15/arts/music/angel-deradoorian-find-the-sun.html",
       "source": "nytimes"
     },
     {
-      "id": "https://www.nytimes.com/2023/09/05/t-magazine/artists-designers-legacy.html",
-      "headline": "The Burden of Inheritance",
-      "thumbnail": "https://static01.nyt.com/images/2023/09/05/t-magazine/05tmag-vaccarello-slide-4VRO-copy-copy/05tmag-vaccarello-slide-4VRO-copy-copy-square640.jpg",
-      "date": "September 5th, 2023",
-      "url": "https://www.nytimes.com/2023/09/05/t-magazine/artists-designers-legacy.html",
+      "id": "https://www.nytimes.com/2020/09/08/world/middleeast/israel-coronavirus-ronni-gamzu-netanyahu.html",
+      "headline": "Israel’s Virus Czar Was Making Headway. Then He Tangled With a Key Netanyahu Ally.",
+      "thumbnail": "https://static01.nyt.com/images/2020/09/08/world/08virus-israel1/08virus-israel1-square640-v2.jpg",
+      "date": "September 8th, 2020",
+      "rawDate": "2020-09-08",
+      "url": "https://www.nytimes.com/2020/09/08/world/middleeast/israel-coronavirus-ronni-gamzu-netanyahu.html",
       "source": "nytimes"
     },
     {
-      "id": "https://www.nytimes.com/2023/08/27/opinion/trump-prosecution-jury-courts.html",
-      "headline": "Trump’s Fate Belongs in the Hands of 12 Ordinary Citizens",
-      "thumbnail": "https://static01.nyt.com/images/2023/08/27/multimedia/27wegman-photo-qzpb/27wegman-photo-qzpb-square640.jpg",
-      "date": "August 27th, 2023",
-      "url": "https://www.nytimes.com/2023/08/27/opinion/trump-prosecution-jury-courts.html",
+      "id": "https://www.nytimes.com/2020/09/08/business/low-wage-workers-who-depend-on-office-based-businesses-stand-to-lose-the-most.html",
+      "headline": "Low-wage workers who depend on office-based businesses stand to lose the most.",
+      "thumbnail": "https://static01.nyt.com/images/2020/09/03/business/03virus-workers-01/00virus-workers-01-square640.jpg",
+      "date": "September 8th, 2020",
+      "rawDate": "2020-09-08",
+      "url": "https://www.nytimes.com/2020/09/08/business/low-wage-workers-who-depend-on-office-based-businesses-stand-to-lose-the-most.html",
       "source": "nytimes"
     }
-  ]
+]

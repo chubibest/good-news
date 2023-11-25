@@ -18,9 +18,11 @@ interface ReturnType {
     }
 }
 
+const keys = ['BboaoE5pFBiA1GDraV3HjSUEhPlw8xwW', 'HoWFnmnlJlRtOcYAMOcp8DBRWj9sIm7A', 'w3NGuQTVGUnGLuYBAa822u9j1HiB0r75']
+
 const query = async ({ search, page }: QueryParamsAndFilters): Promise<NewsItemProps[]> => {
     const nytPage = page - 1;
-    const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${search}&api-key=BboaoE5pFBiA1GDraV3HjSUEhPlw8xwW&page=${nytPage}&sort=newest`
+    const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${search}&api-key=${keys[0]}&page=${nytPage}&sort=newest`
 
     try {
         const response = await fetch(url);
@@ -32,6 +34,7 @@ const query = async ({ search, page }: QueryParamsAndFilters): Promise<NewsItemP
                 headline: result.headline.main,
                 thumbnail: 'https://static01.nyt.com/' + result.multimedia.find((media) => media.subtype === 'square640')?.url,
                 date: formateDate(result.pub_date),
+                rawDate: result.pub_date.split('T')[0],
                 url: result.web_url,
                 source: 'nytimes' as 'nytimes',
             }
@@ -39,6 +42,7 @@ const query = async ({ search, page }: QueryParamsAndFilters): Promise<NewsItemP
 
         return results
     } catch (error) {
+        keys.push(keys.shift() as string);
         console.error('Error fetching news from New York Times:', error);
         return []
     }
