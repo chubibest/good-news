@@ -15,12 +15,15 @@ export interface NewsItemProps {
 
 const NewsItem = ({ headline, thumbnail, date, source, url }: NewsItemProps) => {
     return (
-        <div className='grid grid-cols-12 mb-[9vw]'>
-            <h3 className='mb-[4vw] md:mb-[unset] text-left md:col-start-4 col-span-full'>{headline}</h3>
-            <div className='md:col-start-4 col-span-full flex flex-row justify-start'>
-                <p className="mr-[4vw]">{date}</p>
-                <ColorfulTag {...sourceTagStyles[source]} />
-                <a className="ml-[4vw] cursor-pointer" href={url} target='_blank'>See more...</a>
+        <div className='grid relative grid-cols-12 mb-[9vw] md:mb-[4vw]'>
+            <div className='text-left md:col-start-4 col-span-full'>
+                <h3 className="mb-[4vw]  md:mb-[1vw]">{headline}</h3>
+                <div className='flex flex-row justify-start'>
+                    <p className="mr-[4vw]">{date}</p>
+                    <ColorfulTag {...sourceTagStyles[source]} />
+                    <a className="ml-[4vw] cursor-pointer" href={url} target='_blank'>See more...</a>
+                </div>
+                
             </div>
             <div className="relative row-start-3 md:row-start-1 mb-[2vw] md:mb-[unset]
                 place-self-center w-[60vw] h-[60vw] md:w-[15vw] md:h-[15vw] rounded col-start-1
