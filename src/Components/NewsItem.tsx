@@ -8,19 +8,19 @@ export interface NewsItemProps {
     date: string
     rawDate: string
     url?: string
-    // source: 'nytimes' | 'guardian' | 'newsapi'
     source: string
 }
 
 
 
-const NewsItem = ({ headline, thumbnail, date, source }: NewsItemProps) => {
+const NewsItem = ({ headline, thumbnail, date, source, url }: NewsItemProps) => {
     return (
         <div className='grid grid-cols-12 mb-[9vw]'>
             <h3 className='mb-[4vw] md:mb-[unset] text-left md:col-start-4 col-span-full'>{headline}</h3>
             <div className='md:col-start-4 col-span-full flex flex-row justify-start'>
                 <p className="mr-[4vw]">{date}</p>
                 <ColorfulTag {...sourceTagStyles[source]} />
+                <a className="ml-[4vw] cursor-pointer" href={url} target='_blank'>See more...</a>
             </div>
             <div className="relative row-start-3 md:row-start-1 mb-[2vw] md:mb-[unset]
                 place-self-center w-[60vw] h-[60vw] md:w-[15vw] md:h-[15vw] rounded col-start-1

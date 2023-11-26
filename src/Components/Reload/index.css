@@ -25,7 +25,7 @@
           fill: var(--color);
       }
       &:hover {
-          background: #def4d7;
+          transform: scale(110%);
           cursor: pointer;
       }
       &:active {
@@ -34,7 +34,7 @@
           }
       }
       &.loading {
-          background: #def4d7;
+          /* background: #def4d7; */
           cursor: wait;
           .icon {
               fill: #5ac938;

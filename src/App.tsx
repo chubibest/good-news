@@ -4,14 +4,18 @@ import NewsItem, { NewsItemProps } from './Components/NewsItem'
 import Reload from './Components/Reload'
 import SortSVG from './Components/SortSVG'
 import FilterSVG from './Components/FilterSVG'
-
+import PreferenceSelector from './Components/PreferenceSelector'
 import { composer, sortFunction } from './utilities/data-sources'
-import { options, optionToText, sourceTagStyles } from './utilities/options'
+import { options, optionToText } from './utilities/options'
 
 function App() {
   const searchParams = new URLSearchParams(window.location.search);
   const searchString = searchParams.get('q')
 
+  const [choosingPreferences, setChoosingPreferences] = useState(!searchString)
+  const [fetchingPreferences, setFetchingPreferences] = useState(false)
+  const [itemsDeferredForPreferences, setItemsDeferredForPreferences] = useState([] as NewsItemProps[])
+  const [preferences, setPreferences] = useState([] as string[])
   const [newsItems, setNewsItems] = useState([] as NewsItemProps[])
   const [sortedAndFiltered, setSortedAndFiltered] = useState([] as NewsItemProps[])
   const [inputValue, setInputValue] = useState(searchString || '')
@@ -44,14 +48,14 @@ function App() {
 
   const handleSearch = useCallback(() => {
     if (!inputValue) return
-    window.location.replace(window.location.href + `?q=${inputValue}`)
+    window.location.replace(window.location.protocol + '//' + window.location.host + `?q=${inputValue}`)
   }, [inputValue])
 
 
-
-
   const fetchMoreNews = useCallback(() => {
+
     if (ref.current && !fetching) {
+
       if(ref.current.scrollHeight - ref.current.scrollTop < (2 * ref.current.clientHeight)) {
         setFetching(() => true)
         setPage((prevPage) => prevPage + 1);
@@ -59,11 +63,11 @@ function App() {
     }
   }, [fetching])
 
+
   useEffect(() => {
     setFetching(() => true)
 
     composer({ page, ...(searchString && { search: searchString }) }).then((data) => {
-      console.log(JSON.stringify(data, null, 2))
       setNewsItems((prevItems) => [...prevItems, ...data]);
       setButtonActive(() => true)
       setFetching(() => false)
@@ -71,21 +75,61 @@ function App() {
   }, [page, searchString]);
 
   useEffect(() => {
-    if(!ref.current) return
+    if(preferences.length === 0) return
+    if(page === 1) {
+      setFetchingPreferences(() => true)
+    }
+    setFetching(() => true)
+    const promises = preferences.map((preference) => {
+      return composer({ page, preference: preference.toLowerCase() });
+    })
 
-    ref.current.addEventListener('scroll', fetchMoreNews);
-    return () => ref.current.removeEventListener('scroll', fetchMoreNews);
-  }, [fetchMoreNews]);
+    Promise.allSettled(promises).then((results) => {
+      const data = results.reduce((acc, result) => {
+        if(result.status === 'fulfilled') {
+          return [...acc, ...result.value]
+        }
+        return acc
+      }, [] as NewsItemProps[])
+      if(page === 1) {
+        setNewsItems((prevItems) => {
+          setItemsDeferredForPreferences(() => prevItems)
+          return data
+        });
+      } else if(page === 2) {
+        setNewsItems((prevItems) => [...prevItems, ...itemsDeferredForPreferences, ...data])
+      }else {
+        setNewsItems((prevItems) => [...prevItems, ...data]);
+      }
+      setFetching(() => false)
+      setFetchingPreferences(() => false)
+    })
+  }, [preferences, page]);
 
   useEffect(() => {
-    setSortedAndFiltered(() => [...sortFunction(newsItems, {order: sortOrder, source: selectedFilter as string})])
+    if(!ref || !ref.current) return
+
+    ref.current.addEventListener('scroll', fetchMoreNews);
+    return () => {
+      if(ref && ref.current) {
+        ref.current.removeEventListener('scroll', fetchMoreNews);
+      }
+    }
+  }, [fetchMoreNews, fetching, choosingPreferences]);
+
+  useEffect(() => {
+    setSortedAndFiltered(() => [
+      ...sortFunction(newsItems,
+      {order: sortOrder, source: selectedFilter as string, preferences: preferences.length > 0}
+    )])
   }, [selectedFilter, sortOrder, newsItems])
 
-  console.log(isFilterOpen)
 
   return (
-    
-    newsItems.length === 0 ? 
+    choosingPreferences ? 
+      <PreferenceSelector setPreferences={setPreferences} setChoosingPreferences={setChoosingPreferences} />
+      :
+    newsItems.length === 0 || fetchingPreferences ? 
       <div className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
         <Reload loading={true}/>
       </div>
@@ -142,47 +186,5 @@ function App() {
       </div>
   )
 }
-// NewsAPI , The Guardian, New York Times
+
 export default App
-
-
-// const apiKey = 'YOUR_NEWSAPI_API_KEY';
-// const apiUrl = 'https://newsapi.org/v2/top-headlines';
-
-// fetchNews();
-
-// const apiUrl = 'https://content.guardianapis.com/search';
-// const apiKey = 'YOUR_GUARDIAN_API_KEY';
-
-// async function fetchGuardianNews() {
-//   try {
-//     const response = await fetch(`${apiUrl}?api-key=${apiKey}`);
-//     const data = await response.json();
-//     console.log(data.response.results);
-//   } catch (error) {
-//     console.error('Error fetching news from The Guardian:', error);
-//   }
-// }
-
-// fetchGuardianNews();
-
-// const apiUrl = 'https://api.nytimes.com/svc/topstories/v2/home.json';
-// const apiKey = 'YOUR_NYT_API_KEY';
-
-// async function fetchNYTNews() {
-//   try {
-//     const response = await fetch(`${apiUrl}?api-key=${apiKey}`);
-//     const data = await response.json();
-//     console.log(data.results);
-//   } catch (error) {
-//     console.error('Error fetching news from New York Times:', error);
-//   }
-// }
-
-// fetchNYTNews();
-
-// - SEARCH(KEYWORD), FILTERING(DATE, CATEGORY, SOURCE)
-// - PERSONALIZATION(SOURCES, CATEGORIES, AUTHORS) LOCAL STORAGE
-
-// // newsapi: business entertainment general health science sports technology
-// // nytimes: business, fashion, food, health  science, sports, technology, 

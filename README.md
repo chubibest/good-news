@@ -1,3 +1,8 @@
+This application fetches News items from the following sources:
+- The Guardian
+- The New york times 
+- News API
+
 #### Start the Server
 If you have docker installed, run:
 ```bash

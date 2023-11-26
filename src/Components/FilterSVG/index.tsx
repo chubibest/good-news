@@ -21,8 +21,8 @@ const FilterSVG = ({ filter, clearFilter, setIsFilterOpen }) => {
         <svg className={`w-[4vw] h-[4vw] md:w-[1.5vw] md:h-[1.5vw] ${fill}`} 
           onClick={(e) => {
             clearFilter(null)
-            console.log('clicked', setIsFilterOpen)
             setIsFilterOpen(false)
+
             e.stopPropagation()
           }}
           aria-label='Remove selected filter'

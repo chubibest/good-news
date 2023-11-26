@@ -33,10 +33,11 @@ interface ReturnType {
 }
 
 const keys = ['984bbfa7-3cb3-4ef1-ad4c-4723d115fdf2', '17d993b2-4853-4f27-84be-5b3ba90a435c', '0108cf2e-fb64-405c-806c-55cca73c2076']
-const query = async ({ search, page }: QueryParamsAndFilters): Promise<NewsItemProps[]>  => {
-  const url =`https://content.guardianapis.com/search?api-key=${keys[0]}&page=${page}&show-fields=thumbnail`
+const query = async ({ search, page, preference }: QueryParamsAndFilters): Promise<NewsItemProps[]>  => {
+  const orderBy = preference || search ? 'relevance' : 'newest'
+  const url =`https://content.guardianapis.com/search?api-key=${keys[0]}&page=${page}&show-fields=thumbnail&order-by=${orderBy}`
   try {
-    const response = await fetch(search ? `${url}&q=${search}`: url);
+    const response = await fetch(search || preference? `${url}&q=${search || preference}`: url);
     const data = await response.json() as ReturnType;
 
     const results = data.response.results.map((result: any) => {
@@ -47,13 +48,14 @@ const query = async ({ search, page }: QueryParamsAndFilters): Promise<NewsItemP
         date: formatDate(result.webPublicationDate),
         rawDate: result.webPublicationDate.split('T')[0],
         source: 'guardian' as 'guardian',
+        url: result.webUrl
       }
     })
 
     return results
   } catch (error) {
     keys.push(keys.shift() as string);
-    console.log(error)
+
     return []
   }
 }
