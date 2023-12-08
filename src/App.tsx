@@ -143,13 +143,13 @@ function App() {
                 />
               <button className={`${!buttonActive ? 'bg-[dimgrey]': ''}`} onClick={handleSearch} disabled={!buttonActive}>Search</button>
             </div>
-            <Reload loading={fetching}/>
+            <Reload loading={false}/>
           </div>
           <div className='flex justify-center items-center gap-[4vw] pt-[2vw] pt-[4vw]'>
             <div className="relative" onClick={handleFilterClick} aria-label='Filter by news source'>
               <FilterSVG filter={selectedFilter} clearFilter={setSelectedFilter} setIsFilterOpen={setIsFilterOpen}/>
               {isFilterOpen && (
-                <ul className="text-left  flex flex-col absolute z-10 w-[30vw] md:w-[10vw]  gap-[2vw] top-[7vw] md:top-[3vw] left-[0] rounded shadow bg-[var(--background)]">
+                <ul className="text-left p-[3vw] md:p-[2vw] flex flex-col absolute z-10 w-[40vw] md:w-[15vw]  gap-[2vw] top-[7vw] md:top-[3vw] left-[0] left-[-2vw] md:left-[-2vw] rounded shadow bg-[var(--background)]">
                   {options.map((option) => (
                     <li
                       key={option}
@@ -183,6 +183,12 @@ function App() {
             })}
           </ul>
         </section>
+            {fetching ? 
+                <div className='backdrop-blur fixed bottom-0 py-[6vw] md:py-[2vw] flex justify-center w-[100vw]'>
+                  <Reload loading={fetching}/>
+                </div>
+               : null
+             }
       </div>
   )
 }
