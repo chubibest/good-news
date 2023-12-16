@@ -124,6 +124,18 @@ function App() {
     )])
   }, [selectedFilter, sortOrder, newsItems])
 
+  const closeFilter = useCallback(() => {
+    setIsFilterOpen(()=> false);
+  }, [])
+
+  useEffect(() => {
+    if(isFilterOpen){
+      document.body.addEventListener('click', closeFilter);
+      return () => {
+        document.body.removeEventListener('click', closeFilter);
+      }
+    }
+  }, [isFilterOpen])
 
   return (
     choosingPreferences ? 
@@ -146,7 +158,7 @@ function App() {
             <Reload loading={false}/>
           </div>
           <div className='flex justify-center items-center gap-[4vw] pt-[2vw] pt-[4vw]'>
-            <div className="relative" onClick={handleFilterClick} aria-label='Filter by news source'>
+            <div className="relative" onClick={(e) => {handleFilterClick(); e.stopPropagation()}} aria-label='Filter by news source'>
               <FilterSVG filter={selectedFilter} clearFilter={setSelectedFilter} setIsFilterOpen={setIsFilterOpen}/>
               {isFilterOpen && (
                 <ul className="text-left p-[3vw] md:p-[2vw] flex flex-col absolute z-10 w-[40vw] md:w-[15vw]  gap-[2vw] top-[7vw] md:top-[3vw] left-[0] left-[-2vw] md:left-[-2vw] rounded shadow bg-[var(--background)]">

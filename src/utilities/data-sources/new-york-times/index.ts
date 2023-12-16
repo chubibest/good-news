@@ -45,10 +45,11 @@ const query = async ({ search, page, preference }: QueryParamsAndFilters): Promi
             
             return data.results.map((result) => {
                 const date = result.updated_date || result.published_date || result.created_date;
+
                 return {
                     id: result.url,
                     headline: result.title,
-                    thumbnail: result.multimedia.find(({format, type}) => type === 'image' && format === 'Large Thumbnail')?.url,
+                    thumbnail: result.multimedia?.find(({format, type}) => type === 'image' && format === 'Large Thumbnail')?.url,
                     date: formateDate(date),
                     rawDate: date.split('T')[0], 
                     url: result.url,
@@ -79,7 +80,7 @@ const query = async ({ search, page, preference }: QueryParamsAndFilters): Promi
         return results
     } catch (error) {
         keys.push(keys.shift() as string);
-        console.error('Error fetching news from New York Times:', error);
+
         return []
     }
 }
