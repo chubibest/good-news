@@ -1,15 +1,16 @@
 import React from 'react'
 import { optionToText } from '../../utilities/options'
 
-const FilterSVG = ({ filter, clearFilter, setIsFilterOpen }) => {
+const FilterSVG = ({ filter, clearFilter, setIsFilterOpen, isFilterOpen }) => {
   const fill = filter ? "fill-active" : "fill-[var(--color)]";
   const textColor = filter ? "text-active" : "text-[var(--color)]";
 
   return (
-    <div className='cursor-pointer flex justify-center gap-[1vw] items-center'>
-      <svg className={`w-[4vw] h-[4vw] md:w-[1.5vw] md:h-[1.5vw] ${fill}`} viewBox="0 0 24 24" aria-label="Filter Icon" focusable="false">
+    <div className='cursor-pointer relative flex justify-center gap-[1vw] items-center'>
+      <svg className={`z-10 w-[4vw] h-[4vw] md:w-[1.5vw] md:h-[1.5vw] ${fill}`} viewBox="0 0 24 24" aria-label="Filter Icon" focusable="false">
           <path d="M20,8H4C3.4,8,3,7.6,3,7s0.4-1,1-1h16c0.6,0,1,0.4,1,1S20.6,8,20,8z M18,13c0-0.6-0.4-1-1-1H7c-0.6,0-1,0.4-1,1s0.4,1,1,1h10C17.6,14,18,13.6,18,13z M15,19c0-0.6-0.4-1-1-1h-4c-0.6,0-1,0.4-1,1s0.4,1,1,1h4C14.6,20,15,19.6,15,19z"></path>
       </svg>
+      {/* <div className="h-[3vw] absolute top-[2vw] w-[6vw]  border border-[3vw] border-b-[--background] border-r-[transparent] border-t-[transparent] border-l-[transparent]"></div> */}
       {
         filter ?
         <p className={`${textColor}`}>

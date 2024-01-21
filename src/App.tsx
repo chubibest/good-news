@@ -48,10 +48,16 @@ function App() {
 
   const handleSearch = useCallback(() => {
     if (!inputValue) return
+    setButtonActive(() => false)
     window.location.replace(window.location.protocol + '//' + window.location.host + `?q=${inputValue}`)
   }, [inputValue])
 
-
+  const handleEnterKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      // Trigger the search function
+      handleSearch();
+    }
+  };
   const fetchMoreNews = useCallback(() => {
 
     if (ref.current && !fetching) {
@@ -152,6 +158,7 @@ function App() {
             <div className='flex gap-[2vw]'>
               <input className='pl-[2vw] md:pl-[1vw]' type="text" 
                 placeholder="Search" value={inputValue} onChange={handleChangeSearchText}
+                onKeyPress={handleEnterKeyPress}
                 />
               <button className={`${!buttonActive ? 'bg-[dimgrey]': ''}`} onClick={handleSearch} disabled={!buttonActive}>Search</button>
             </div>
@@ -159,12 +166,13 @@ function App() {
           </div>
           <div className='flex justify-center items-center gap-[4vw] pt-[2vw] pt-[4vw]'>
             <div className="relative" onClick={(e) => {handleFilterClick(); e.stopPropagation()}} aria-label='Filter by news source'>
-              <FilterSVG filter={selectedFilter} clearFilter={setSelectedFilter} setIsFilterOpen={setIsFilterOpen}/>
+              <FilterSVG filter={selectedFilter} isFilterOpen={isFilterOpen} clearFilter={setSelectedFilter} setIsFilterOpen={setIsFilterOpen}/>
               {isFilterOpen && (
-                <ul className="text-left p-[3vw] md:p-[2vw] flex flex-col absolute z-10 w-[40vw] md:w-[15vw]  gap-[2vw] top-[7vw] md:top-[3vw] left-[0] left-[-2vw] md:left-[-2vw] rounded shadow bg-[var(--background)]">
+                <ul className="text-left p-[3vw] md:p-[2vw] flex flex-col absolute z-10 w-[40vw] md:w-[15vw]  gap-[2vw] top-[7vw] md:top-[3vw] left-[0] left-[-2vw] md:left-[-2vw] rounded shadow-sm shadow-[--color] bg-[var(--background)]">
                   {options.map((option) => (
                     <li
                       key={option}
+                      className='cursor-pointer'
                       onClick={(e) => {
                         handleFilterOption(option)
                         e.stopPropagation()
