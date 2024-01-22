@@ -49,7 +49,7 @@ function App() {
   const handleSearch = useCallback(() => {
     if (!inputValue) return
     setButtonActive(() => false)
-    window.location.replace(window.location.protocol + '//' + window.location.host + `?q=${inputValue}`)
+    window.location.replace(window.location.protocol + '//' + window.location.host + '/good-news' + `?q=${inputValue}`)
   }, [inputValue])
 
   const handleEnterKeyPress = (event) => {
