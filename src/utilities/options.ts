@@ -1,8 +1,9 @@
-export const options = ['nytimes', 'guardian', 'newsapi']
+export const options = ['nytimes', 'guardian', 'newsapi', 'newsdata']
 export const optionToText = {
   nytimes: 'New York Times',
   guardian: 'The Guardian',
-  newsapi: 'News API'
+  newsapi: 'News API',
+  newsdata: 'NewsData.io',
 }
 
 export const sourceTagStyles = {
@@ -21,4 +22,9 @@ export const sourceTagStyles = {
         text: 'NewsAPI',
         textColor: 'text-[#fff]'
     },
+    newsdata: {
+        bgColor: 'bg-[#ff6600]',
+        text: 'NewsData.io',
+        textColor: 'text-[#fff]'
+    }
 }

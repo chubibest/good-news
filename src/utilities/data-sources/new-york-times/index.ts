@@ -1,6 +1,7 @@
 import { QueryParamsAndFilters } from "../../../types/BaseTypes";
 import { NewsItemProps } from "../../../Components/NewsItem";
 import formateDate from '../../formatDate'
+import getHourlyRotatedKey from '../getHourlyRotatedKey';
 interface ArticleSearchReturnType {
     status: string;
     response: {
@@ -36,11 +37,12 @@ interface HomepageReturnType {
 const keys = ['BboaoE5pFBiA1GDraV3HjSUEhPlw8xwW', 'HoWFnmnlJlRtOcYAMOcp8DBRWj9sIm7A', 'w3NGuQTVGUnGLuYBAa822u9j1HiB0r75']
 
 const query = async ({ search, page, preference }: QueryParamsAndFilters): Promise<NewsItemProps[]> => {
+    const activeKey = getHourlyRotatedKey(keys)
     
     try {
         if (!search) {
             const section = preference?.toLowerCase() || 'home';
-            const response = await fetch(`https://api.nytimes.com/svc/topstories/v2/${section}.json?api-key=${keys[0]}`);
+            const response = await fetch(`https://api.nytimes.com/svc/topstories/v2/${section}.json?api-key=${activeKey}`);
             const data = await response.json() as HomepageReturnType;
             
             return data.results.map((result) => {
@@ -60,7 +62,7 @@ const query = async ({ search, page, preference }: QueryParamsAndFilters): Promi
 
 
         const nytPage = page - 1;
-        const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${search}&api-key=${keys[0]}&page=${nytPage}&sort=relevance`
+    const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${search}&api-key=${activeKey}&page=${nytPage}&sort=relevance`
         
         const response = await fetch(url);
         const data = await response.json() as ArticleSearchReturnType;
@@ -79,8 +81,6 @@ const query = async ({ search, page, preference }: QueryParamsAndFilters): Promi
 
         return results
     } catch (error) {
-        keys.push(keys.shift() as string);
-
         return []
     }
 }

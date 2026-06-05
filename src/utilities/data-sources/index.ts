@@ -1,6 +1,7 @@
 import { query as guardianQuery } from './the-guardian'
 import { query as nytQuery } from './new-york-times'
 import { query as newsApiQuery } from './news-api'
+import { query as newsDataQuery } from './news-data'
 import { QueryParamsAndFilters } from '../../types/BaseTypes'
 import { NewsItemProps } from '../../Components/NewsItem'
 
@@ -8,14 +9,16 @@ export const composer = async ({ search, page, preference }: QueryParamsAndFilte
 
     const guardian = await guardianQuery({ search, page })
     const newsApi = await newsApiQuery({ search, page })
+    const newsData = await newsDataQuery({ search, page, preference })
+
 
     if(page > 1 && preference) {
-        return [...guardian, ...newsApi]
+        return [...guardian, ...newsApi, ...newsData]
     }
 
     const nyt = await nytQuery({ search, page })
 
-    return [...guardian, ...nyt, ...newsApi]
+    return [...guardian, ...nyt, ...newsApi, ...newsData]
 }
 
 type SortGeneric = Awaited<ReturnType<typeof composer>>
